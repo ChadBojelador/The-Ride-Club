@@ -107,9 +107,13 @@
 }
 .about__card--yellow:hover { box-shadow: 10px 10px 0 var(--color-ink); }
 
-.about__card-icon {
-  font-size: 2.2rem;
+.about__card-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
   line-height: 1;
+  color: var(--color-ink-muted);
+  opacity: 0.7;
 }
 
 .about__card-title {

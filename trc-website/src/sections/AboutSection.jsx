@@ -4,23 +4,23 @@ import './AboutSection.css';
 const PILLARS = [
   {
     id: 'ride',
-    icon: '🏍️',
+    number: '01',
     title: 'Ride Together',
     body: 'Discover and join group rides happening near you. From casual weekend cruises to epic multi-day tours.',
     color: 'blue',
   },
   {
     id: 'connect',
-    icon: '🤝',
+    number: '02',
     title: 'Connect',
     body: 'Find your crew. Build friendships that start on the road and carry off it. The club is more than just a ride.',
     color: 'red',
   },
   {
     id: 'explore',
-    icon: '🗺️',
+    number: '03',
     title: 'Explore',
-    body: 'Unlock scenic routes, hidden roads, and legendary highways mapped by real riders across the Philippines.',
+    body: 'Unlock scenic routes, hidden roads, and legendary highways mapped by real riders across the country.',
     color: 'yellow',
   },
 ];
@@ -55,7 +55,7 @@ export default function AboutSection() {
               className={`about__card about__card--${p.color}`}
               style={{ '--delay': `${i * 80}ms` }}
             >
-              <span className="about__card-icon">{p.icon}</span>
+              <span className="about__card-num">{p.number}</span>
               <h3 className="about__card-title">{p.title}</h3>
               <p className="about__card-body">{p.body}</p>
             </div>
@@ -65,18 +65,18 @@ export default function AboutSection() {
         {/* Big stat strip */}
         <div className="about__strip">
           <div className="about__stat">
-            <span className="about__stat-num">∞</span>
-            <span className="about__stat-label">Routes to Discover</span>
+            <span className="about__stat-num">100%</span>
+            <span className="about__stat-label">Rider Powered</span>
           </div>
           <div className="about__strip-divider" aria-hidden="true" />
           <div className="about__stat">
-            <span className="about__stat-num">1</span>
+            <span className="about__stat-num">01</span>
             <span className="about__stat-label">Community, One Mission</span>
           </div>
           <div className="about__strip-divider" aria-hidden="true" />
           <div className="about__stat">
-            <span className="about__stat-num">0</span>
-            <span className="about__stat-label">Solo Rides Required</span>
+            <span className="about__stat-num">24/7</span>
+            <span className="about__stat-label">Open Road</span>
           </div>
         </div>
 

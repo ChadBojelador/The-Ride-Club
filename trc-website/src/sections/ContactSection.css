@@ -40,6 +40,87 @@
   align-self: flex-start;
 }
 
+/* ── Creator Profile Card ── */
+.contact__creator-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.25rem;
+  width: fit-content;
+  max-width: 100%;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  transition:
+    transform var(--duration-fast) var(--ease-bounce),
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
+}
+
+.contact__creator-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-yellow);
+  box-shadow: 6px 6px 0 rgba(254, 198, 15, 0.2);
+}
+
+.contact__avatar-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.contact__avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  object-position: center;
+  border: 2.5px solid var(--color-yellow);
+  box-shadow: 3px 3px 0 var(--color-ink);
+  display: block;
+}
+
+.contact__badge {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  background: var(--color-red);
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.15em 0.55em;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-ink);
+  box-shadow: 1.5px 1.5px 0 var(--color-ink);
+}
+
+.contact__creator-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.contact__creator-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.15rem;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+.contact__creator-role {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--color-yellow);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .contact__heading {
   font-family: var(--font-display);
   font-weight: 900;
@@ -176,8 +257,16 @@
   padding: var(--space-xl) var(--space-md);
 }
 
-.contact__success-icon {
-  font-size: 3rem;
+.contact__success-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--color-yellow);
+  color: var(--color-ink);
+  margin-bottom: var(--space-xs);
   animation: successBounce 0.5s var(--ease-bounce);
 }
 
