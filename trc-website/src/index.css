@@ -1,6 +1,7 @@
 /* ========================================
    THE RIDES CLUB — Global Styles
-   Design system guided by funky-bubble-design skill
+   Palette: #FEC60F (Yellow) | #D04D44 (Coral Red) | #3043E4 (Royal Blue) | #FFFFFF (White)
+   Design System: funky-bubble-design
    ======================================== */
 
 /* --- Reset --- */
@@ -14,27 +15,31 @@
 
 /* --- CSS Custom Properties --- */
 :root {
-  /* Primary palette — one loud saturated field + bold accents */
-  --color-marigold: #FF6B35;
-  --color-coral: #FF4E50;
-  --color-royal-blue: #3949E0;
-  --color-deep-blue: #1a2299;
-  --color-hot-pink: #E8483F;
-  --color-hot-pink-dark: #B23A32;
-  --color-grape: #7B2D8E;
-  --color-teal: #00B4A6;
-  --color-yellow: #FFD23F;
-
-  /* Neutrals */
-  --color-ink: #1a1a1a;
-  --color-cream: #FFF8F0;
-  --color-white: #ffffff;
+  /* Exact Palette from User */
+  --color-yellow: #FEC60F;
+  --color-yellow-dark: #D59F00;
+  --color-yellow-light: #FFECA0;
+  
+  --color-red: #D04D44;
+  --color-red-dark: #A62E26;
+  --color-red-light: #FCE8E6;
+  
+  --color-blue: #3043E4;
+  --color-blue-dark: #1A28A8;
+  --color-blue-light: #E7EAFE;
+  
+  --color-white: #FFFFFF;
+  --color-cream: #FFFDF9;
+  --color-ink: #141414;
+  --color-ink-muted: #555555;
+  --color-card-bg: #FFFFFF;
 
   /* Typography */
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Spacing scale */
+  /* Spacing Scale */
+  --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 1rem;
   --space-md: 1.5rem;
@@ -43,28 +48,37 @@
   --space-2xl: 6rem;
   --space-3xl: 8rem;
 
-  /* Border radius */
+  /* Border Radii */
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-pill: 999px;
 
-  /* Shadows — hard offset, not soft blur (per funky-bubble-design) */
-  --shadow-sm: 3px 3px 0 var(--color-ink);
-  --shadow-md: 5px 5px 0 var(--color-ink);
-  --shadow-lg: 8px 8px 0 var(--color-ink);
+  /* Hard Offset Shadows (0 blur for signature funky sticker look) */
+  --border-thick: 3.5px solid var(--color-ink);
+  --border-card: 3px solid var(--color-ink);
+  --border-thin: 2px solid var(--color-ink);
+  
+  --shadow-xs: 2px 2px 0 var(--color-ink);
+  --shadow-sm: 4px 4px 0 var(--color-ink);
+  --shadow-md: 6px 6px 0 var(--color-ink);
+  --shadow-lg: 9px 9px 0 var(--color-ink);
+  --shadow-xl: 12px 12px 0 var(--color-ink);
 
-  /* Motion — snappy with overshoot */
+  /* Animation & Transitions */
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 150ms;
   --duration-normal: 250ms;
+  --duration-slow: 400ms;
 
   /* Layout */
-  --max-width: 1200px;
-  --gutter: clamp(1rem, 4vw, 2rem);
+  --max-width: 1240px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
 }
 
-/* --- Base Styles --- */
+/* --- Base --- */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -76,19 +90,25 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   color: var(--color-ink);
-  background-color: var(--color-cream);
+  background-color: var(--color-yellow);
+  background-image: 
+    radial-gradient(circle at 20px 20px, rgba(20, 20, 20, 0.04) 2px, transparent 0);
+  background-size: 32px 32px;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
+/* Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 1.1;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+p {
+  color: var(--color-ink);
 }
 
 a {
@@ -98,12 +118,12 @@ a {
 
 button {
   cursor: pointer;
-  font-family: var(--font-body);
   border: none;
   background: none;
+  font-family: inherit;
 }
 
-/* --- Utility: Container --- */
+/* --- Layout Utility Classes --- */
 .container {
   width: 100%;
   max-width: var(--max-width);
@@ -111,101 +131,179 @@ button {
   padding-inline: var(--gutter);
 }
 
-/* --- Utility: Section spacing --- */
 .section {
-  padding-block: var(--space-2xl);
+  padding-block: var(--space-xl);
+  position: relative;
 }
 
 @media (min-width: 768px) {
   .section {
-    padding-block: var(--space-3xl);
+    padding-block: var(--space-2xl);
   }
 }
 
-/* --- Funky Bubble Design: Reusable Classes --- */
+/* --- Funky Bubble Design Tokens --- */
 
-/* Bubble text — inflated outlined type */
-.bubble-text {
+/* Outlined Bubble Display Text */
+.bubble-title {
   font-family: var(--font-display);
   font-weight: 900;
-  -webkit-text-stroke: 10px var(--color-royal-blue);
-  color: var(--color-royal-blue);
+  text-transform: uppercase;
+  color: var(--color-white);
+  -webkit-text-stroke: 4px var(--color-ink);
   paint-order: stroke fill;
-  text-shadow:
-    0 4px 0 var(--color-deep-blue),
-    0 8px 12px rgba(0, 0, 0, 0.15);
+  text-shadow: 
+    4px 4px 0 var(--color-ink),
+    6px 6px 0 rgba(0, 0, 0, 0.15);
+  line-height: 0.95;
 }
 
-/* Extruded 3D tag */
+.bubble-title--blue {
+  color: var(--color-blue);
+  -webkit-text-stroke: 4px var(--color-ink);
+  text-shadow: 5px 5px 0 var(--color-ink);
+}
+
+.bubble-title--yellow {
+  color: var(--color-yellow);
+  -webkit-text-stroke: 4px var(--color-ink);
+  text-shadow: 5px 5px 0 var(--color-ink);
+}
+
+.bubble-title--red {
+  color: var(--color-red);
+  -webkit-text-stroke: 4px var(--color-ink);
+  text-shadow: 5px 5px 0 var(--color-ink);
+}
+
+/* 3D Extruded Tag Element */
 .tag-3d {
   position: relative;
-  display: inline-block;
-  background: var(--color-hot-pink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  background: var(--color-red);
   color: var(--color-white);
-  padding: 0.4em 1em;
+  padding: 0.35em 0.85em;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 3px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  box-shadow: 4px 4px 0 var(--color-ink);
   transform: rotate(-3deg);
-  border-radius: var(--radius-sm);
+  z-index: 1;
 }
 
-.tag-3d::after {
-  content: "";
-  position: absolute;
-  top: 6px;
-  left: -6px;
-  width: 100%;
-  height: 100%;
-  background: var(--color-hot-pink-dark);
-  z-index: -1;
-  transform: skew(-8deg, 0);
-  border-radius: var(--radius-sm);
+.tag-3d--blue {
+  background: var(--color-blue);
 }
 
-/* Sticker element */
-.sticker {
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.85);
-  border-radius: var(--radius-pill);
-  transform: rotate(6deg);
+.tag-3d--yellow {
+  background: var(--color-yellow);
+  color: var(--color-ink);
 }
 
-/* Chunky tactile button */
-.btn-funky {
+/* Tactile Chunky Button */
+.btn-chunky {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
-  background: var(--color-yellow);
-  color: var(--color-ink);
-  border: 4px solid var(--color-ink);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  padding: 0.75em 1.5em;
+  gap: 0.5rem;
+  padding: 0.85rem 1.65rem;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.1rem;
-  transition:
-    transform var(--duration-fast) var(--ease-bounce),
-    box-shadow var(--duration-fast) var(--ease-bounce);
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--duration-fast) var(--ease-bounce),
+              box-shadow var(--duration-fast) var(--ease-bounce),
+              background-color var(--duration-fast) ease;
+  user-select: none;
+  white-space: nowrap;
 }
 
-.btn-funky:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 var(--color-ink);
+.btn-chunky:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-lg);
 }
 
-.btn-funky:active {
-  transform: translate(5px, 5px);
-  box-shadow: 0 0 0 var(--color-ink);
+.btn-chunky:active {
+  transform: translate(4px, 4px);
+  box-shadow: 1px 1px 0 var(--color-ink);
 }
 
-/* Secondary button variant */
-.btn-funky--secondary {
-  background: var(--color-white);
+.btn-chunky--primary {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.btn-chunky--primary:hover {
+  background-color: #2337dc;
+}
+
+.btn-chunky--accent {
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
+.btn-chunky--accent:hover {
+  background-color: #c03d34;
+}
+
+.btn-chunky--secondary {
+  background-color: var(--color-white);
   color: var(--color-ink);
 }
 
-/* App component wrapper */
+.btn-chunky--secondary:hover {
+  background-color: var(--color-yellow-light);
+}
+
+.btn-chunky--yellow {
+  background-color: var(--color-yellow);
+  color: var(--color-ink);
+}
+
+.btn-chunky--yellow:hover {
+  background-color: #ffd43f;
+}
+
+/* Interactive Pill Badge */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border: var(--border-thin);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: var(--shadow-xs);
+  transform: rotate(-1.5deg);
+}
+
+/* Wobbly divider line */
+.wobble-divider {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  margin-block: var(--space-md);
+}
+
+.wobble-divider svg {
+  width: 100%;
+  height: 16px;
+}
+
+/* App Container */
 .app {
-  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
