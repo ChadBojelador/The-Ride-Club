@@ -1,0 +1,333 @@
+/* ========================================
+   TOP NAV — Overlay hamburger menu
+   Positioned absolutely over the hero
+   ======================================== */
+
+/* ── Top Bar ── */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 1.1rem clamp(1.25rem, 4vw, 2.5rem);
+
+  /* Transparent by default — sits over the hero gradient */
+  background: transparent;
+  pointer-events: none; /* let clicks pass through empty areas */
+}
+
+/* Make interactive children clickable */
+.top-nav > * {
+  pointer-events: auto;
+}
+
+/* ── Hamburger Button ── */
+.top-nav__burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  border: 2.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  background: rgba(20, 20, 20, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  padding: 10px 9px;
+  transition:
+    background var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    transform var(--duration-fast) var(--ease-bounce);
+  flex-shrink: 0;
+}
+
+.top-nav__burger:hover {
+  background: rgba(20, 20, 20, 0.7);
+  border-color: var(--color-yellow);
+  transform: scale(1.07);
+}
+
+.top-nav__bar {
+  display: block;
+  width: 100%;
+  height: 2.5px;
+  background: var(--color-white);
+  border-radius: 2px;
+  transform-origin: center;
+  transition:
+    transform 0.35s var(--ease-smooth),
+    opacity 0.25s ease,
+    width 0.3s ease;
+}
+
+/* Animated to X when open */
+.top-nav__burger--open .top-nav__bar--1 {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.top-nav__burger--open .top-nav__bar--2 {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.top-nav__burger--open .top-nav__bar--3 {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* ── Brand Wordmark ── */
+.top-nav__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  text-decoration: none;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.top-nav__brand-trc {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--color-yellow);
+  letter-spacing: 0.05em;
+}
+
+.top-nav__brand-dot {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.top-nav__brand-sub {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.02em;
+}
+
+/* ── Right CTA ── */
+.top-nav__cta {
+  font-size: 0.8rem;
+  padding: 0.55rem 1.1rem;
+  text-decoration: none;
+}
+
+/* ─────────────────────────────────────────
+   OVERLAY — Full-screen menu
+───────────────────────────────────────── */
+.top-nav__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.top-nav__overlay--open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Dim backdrop */
+.top-nav__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.top-nav__overlay--open .top-nav__backdrop {
+  opacity: 1;
+}
+
+/* Slide-in panel */
+.top-nav__panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(440px, 90vw);
+  height: 100%;
+  background: var(--color-ink);
+  border-right: 3px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  transform: translateX(-100%);
+  transition: transform 0.45s var(--ease-smooth);
+
+  /* Subtle dot grid matching brand */
+  background-image:
+    radial-gradient(circle at 20px 20px, rgba(255, 255, 255, 0.025) 1.5px, transparent 0);
+  background-size: 28px 28px;
+  background-color: #0d0d0d;
+}
+
+.top-nav__overlay--open .top-nav__panel {
+  transform: translateX(0);
+}
+
+/* Close button (inside panel, top-right) */
+.top-nav__close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.top-nav__close:hover {
+  background: var(--color-red);
+  border-color: var(--color-red);
+  color: var(--color-white);
+}
+
+/* ── Nav Links ── */
+.top-nav__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  margin-top: var(--space-lg);
+}
+
+.top-nav__item {
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.06);
+
+  /* Staggered slide-in animation */
+  opacity: 0;
+  transform: translateX(-20px);
+  transition:
+    opacity 0.4s ease calc(var(--i) * 60ms + 200ms),
+    transform 0.4s var(--ease-smooth) calc(var(--i) * 60ms + 200ms);
+}
+
+.top-nav__overlay--open .top-nav__item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.top-nav__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 1.25rem 0;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.65);
+  transition:
+    color var(--duration-fast) ease,
+    padding-left var(--duration-fast) ease;
+}
+
+.top-nav__link:hover {
+  color: var(--color-white);
+  padding-left: 8px;
+}
+
+.top-nav__link:hover .top-nav__link-num {
+  color: var(--color-yellow);
+}
+
+.top-nav__link:hover .top-nav__link-arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+.top-nav__link-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.25);
+  min-width: 24px;
+  transition: color var(--duration-fast) ease;
+}
+
+.top-nav__link-text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.85rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  flex: 1;
+}
+
+.top-nav__link-arrow {
+  font-size: 1.1rem;
+  opacity: 0;
+  transition:
+    transform var(--duration-normal) var(--ease-bounce),
+    opacity var(--duration-fast) ease;
+}
+
+/* ── Panel Footer ── */
+.top-nav__panel-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.08);
+
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.4s ease 500ms,
+    transform 0.4s var(--ease-smooth) 500ms;
+}
+
+.top-nav__overlay--open .top-nav__panel-footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.top-nav__panel-tagline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.top-nav__panel-footer .btn-chunky {
+  align-self: flex-start;
+  font-size: 0.85rem;
+  padding: 0.7rem 1.4rem;
+  text-decoration: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .top-nav__brand-sub {
+    display: none;
+  }
+
+  .top-nav__brand-dot {
+    display: none;
+  }
+
+  .top-nav__cta {
+    display: none;
+  }
+}

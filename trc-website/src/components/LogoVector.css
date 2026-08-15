@@ -1,0 +1,80 @@
+/* ========================================
+   HD VECTOR LOGO STYLES — REDESIGNED
+   ======================================== */
+
+.trc-logo-vector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  user-select: none;
+  cursor: pointer;
+  perspective: 1000px;
+}
+
+.trc-logo-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.3s ease;
+  transform-origin: center center;
+  filter: drop-shadow(0 10px 20px rgba(20, 20, 20, 0.10))
+          drop-shadow(0 4px 6px rgba(20, 20, 20, 0.06));
+}
+
+/* Rubber squash-and-stretch on hover */
+.trc-logo-vector:hover .trc-logo-svg {
+  transform: scale(1.06) rotate(-2deg);
+  filter: drop-shadow(0 16px 28px rgba(20, 20, 20, 0.14))
+          drop-shadow(0 6px 10px rgba(20, 20, 20, 0.08));
+}
+
+.trc-logo-vector:active .trc-logo-svg {
+  transform: scale(0.96) rotate(1deg);
+  filter: drop-shadow(0 4px 8px rgba(20, 20, 20, 0.12));
+}
+
+/* "THE" pill badge — gentle float */
+.trc-the-pill {
+  transform-origin: 340px 84px;
+  animation: pill-float 4s ease-in-out infinite;
+}
+
+@keyframes pill-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(1.5deg); }
+}
+
+/* "CLUB" tag — subtle bounce on hover */
+.trc-club-tag {
+  transform-origin: 340px 330px;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.trc-logo-vector:hover .trc-club-tag {
+  transform: translateY(2px) scale(1.02);
+}
+
+/* Decorative dots — staggered wiggle */
+.trc-sticker-dots circle:nth-child(1) {
+  animation: dot-wiggle 3s ease-in-out 0s infinite;
+}
+.trc-sticker-dots circle:nth-child(2) {
+  animation: dot-wiggle 3s ease-in-out 0.4s infinite;
+}
+.trc-sticker-dots circle:nth-child(3) {
+  animation: dot-wiggle 3s ease-in-out 0.8s infinite;
+}
+.trc-sticker-dots circle:nth-child(4) {
+  animation: dot-wiggle 3s ease-in-out 1.2s infinite;
+}
+
+@keyframes dot-wiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.15) rotate(8deg); }
+  75% { transform: scale(0.92) rotate(-6deg); }
+}

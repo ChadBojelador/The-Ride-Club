@@ -1,13 +1,17 @@
 import React from 'react';
-import Navbar from './components/Navbar';
+import TopNav from './components/TopNav';
 import Hero from './sections/Hero';
+import AboutSection from './sections/AboutSection';
+import ContactSection from './sections/ContactSection';
 
 export default function App() {
   return (
     <div className="app">
-      <Navbar />
+      <TopNav />
       <main>
         <Hero />
+        <AboutSection />
+        <ContactSection />
       </main>
     </div>
   );

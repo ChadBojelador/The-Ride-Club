@@ -1,0 +1,191 @@
+/* ========================================
+   ABOUT — The Rides Club Section
+   funky-bubble-design system
+   ======================================== */
+
+.about {
+  background-color: var(--color-yellow);
+  background-image:
+    radial-gradient(circle at 20px 20px, rgba(20, 20, 20, 0.04) 2px, transparent 0);
+  background-size: 32px 32px;
+  padding-block: var(--space-3xl);
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.about__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+  max-width: 640px;
+  margin-bottom: var(--space-2xl);
+}
+
+.about__header .tag-3d {
+  font-size: 0.75rem;
+}
+
+.about__heading {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+/* Reuse bubble-title modifiers from index.css */
+.about__heading .bubble-title--blue {
+  color: var(--color-blue);
+  -webkit-text-stroke: 4px var(--color-ink);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--color-ink);
+  display: inline;
+}
+
+.about__heading .bubble-title--red {
+  color: var(--color-red);
+  -webkit-text-stroke: 4px var(--color-ink);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--color-ink);
+  display: inline;
+}
+
+.about__heading .bubble-title--yellow {
+  color: var(--color-white);
+  -webkit-text-stroke: 4px var(--color-ink);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--color-ink);
+  display: inline;
+}
+
+.about__sub {
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  color: var(--color-ink-muted);
+  line-height: 1.7;
+  max-width: 520px;
+}
+
+/* ── Pillar Cards ── */
+.about__pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.about__card {
+  background: var(--color-white);
+  border: var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--duration-normal) var(--ease-bounce),
+    box-shadow var(--duration-normal) ease;
+  cursor: default;
+}
+
+.about__card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.about__card--blue { border-color: var(--color-blue); box-shadow: 6px 6px 0 var(--color-blue); }
+.about__card--blue:hover { box-shadow: 10px 10px 0 var(--color-blue); }
+
+.about__card--red { border-color: var(--color-red); box-shadow: 6px 6px 0 var(--color-red); }
+.about__card--red:hover { box-shadow: 10px 10px 0 var(--color-red); }
+
+.about__card--yellow {
+  border-color: var(--color-ink);
+  box-shadow: 6px 6px 0 var(--color-ink);
+  background: var(--color-yellow-light);
+}
+.about__card--yellow:hover { box-shadow: 10px 10px 0 var(--color-ink); }
+
+.about__card-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.about__card-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.35rem;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.about__card-body {
+  font-size: 0.95rem;
+  color: var(--color-ink-muted);
+  line-height: 1.65;
+}
+
+/* ── Stat Strip ── */
+.about__strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--color-ink);
+  border: var(--border-thick);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.about__stat {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: var(--space-lg) var(--space-md);
+}
+
+.about__stat-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  color: var(--color-yellow);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 3px 3px 0 rgba(254, 198, 15, 0.3);
+}
+
+.about__stat-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+
+.about__strip-divider {
+  width: 1.5px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .about__strip-divider {
+    display: none;
+  }
+  .about__stat {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+  }
+  .about__stat:last-child {
+    border-bottom: none;
+  }
+}

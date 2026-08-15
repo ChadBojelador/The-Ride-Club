@@ -1,483 +1,434 @@
 /* ========================================
-   HERO SECTION STYLES
-   Palette: #FEC60F, #D04D44, #3043E4, #FFFFFF
+   HERO — Netflix / Festorama Showcase
+   Full-screen auto-transitioning slides
+   Bottom strip: hover-reveal page cards
    ======================================== */
 
+/* ── Container ── */
 .hero {
-  background-color: var(--color-yellow);
-  padding-top: var(--space-lg);
-  padding-bottom: var(--space-2xl);
   position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
   overflow: hidden;
-}
-
-.hero__container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-xl);
-  align-items: center;
-}
-
-@media (min-width: 980px) {
-  .hero__container {
-    grid-template-columns: 1.05fr 1fr;
-    gap: var(--space-2xl);
-  }
-}
-
-/* --- Left Column: Content --- */
-.hero__content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
+/* ─────────────────────────────────────────
+   BACKGROUND LAYERS — crossfade transition
+───────────────────────────────────────── */
+.hero__backgrounds {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__bg--prev {
+  z-index: 1;
+  animation: bgFadeOut 0.75s ease forwards;
+}
+
+.hero__bg--active {
   z-index: 2;
+  opacity: 1;
+}
+
+.hero__bg--fade-in {
+  animation: bgFadeIn 0.75s ease forwards;
+}
+
+@keyframes bgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bgFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Dot-grid texture (brand identity) */
+.hero__dot-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-image: radial-gradient(
+    circle at 20px 20px,
+    rgba(255, 255, 255, 0.06) 1.5px,
+    transparent 0
+  );
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* Bottom vignette so cards sit on a dark base */
+.hero__vignette {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(10, 10, 10, 0.55) 40%,
+    rgba(10, 10, 10, 0.88) 75%,
+    rgba(10, 10, 10, 0.97) 100%
+  );
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────
+   MAIN CONTENT — lower-left text area
+───────────────────────────────────────── */
+.hero__content {
+  position: absolute;
+  left: clamp(1.5rem, 7vw, 5.5rem);
+  bottom: clamp(240px, 32vh, 310px);
+  z-index: 20;
+  max-width: min(580px, 88vw);
+
+  /* Re-animate on slide change (keyed component) */
+  animation: contentIn 0.55s var(--ease-smooth) both;
+}
+
+@keyframes contentIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero__eyebrow {
   display: inline-block;
-}
-
-.hero__eyebrow-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-red);
-  border-radius: var(--radius-pill);
-  animation: pulse-dot 1.8s infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.4); opacity: 0.6; }
-}
-
-/* Headline */
-.hero__title {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: clamp(2.4rem, 6vw, 4.2rem);
-  font-weight: 900;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  margin: 0;
-}
-
-.hero__title-line1 {
-  color: var(--color-ink);
   font-family: var(--font-display);
   font-weight: 900;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-yellow);
+  border: 2px solid var(--color-yellow);
+  border-radius: var(--radius-pill);
+  padding: 0.25em 0.85em;
+  margin-bottom: var(--space-sm);
+  box-shadow: 0 0 12px rgba(254, 198, 15, 0.25);
 }
 
-.hero__title-line2 {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.hero__title-tag {
-  font-size: clamp(1.2rem, 3.5vw, 2.2rem);
-  padding: 0.25em 0.7em;
-  background-color: var(--color-red);
+.hero__tagline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.2rem, 4.5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   color: var(--color-white);
-  border: 4px solid var(--color-ink);
-  box-shadow: 5px 5px 0 var(--color-ink);
-  transform: rotate(-4deg);
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.4),
+    0 8px 30px rgba(0, 0, 0, 0.35);
+  margin-bottom: var(--space-sm);
 }
 
-/* Subtitle */
 .hero__description {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.55;
-  font-weight: 600;
-  color: var(--color-ink);
-  max-width: 540px;
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.65;
+  margin-bottom: var(--space-md);
+  max-width: 460px;
 }
 
-/* Feature Chips */
-.hero__chips {
+.hero__cta {
+  font-size: 0.9rem;
+  padding: 0.75rem 1.6rem;
+  border-color: var(--color-blue-dark);
+  box-shadow: 5px 5px 0 var(--color-blue-dark);
+}
+
+.hero__cta:hover {
+  box-shadow: 8px 8px 0 var(--color-blue-dark);
+}
+
+/* CTA + dots row */
+.hero__content-actions {
   display: flex;
+  align-items: center;
+  gap: var(--space-md);
   flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
-.hero__chip {
-  display: inline-flex;
+/* Progress dots (inline with CTA) */
+.hero__dots {
+  display: flex;
+  gap: 7px;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.75rem;
-  background-color: var(--color-white);
-  border: var(--border-thin);
+}
+
+.hero__dot {
+  width: 7px;
+  height: 7px;
   border-radius: var(--radius-pill);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 0.85rem;
-  box-shadow: var(--shadow-xs);
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    background var(--duration-normal) ease,
+    width var(--duration-normal) var(--ease-smooth);
 }
 
-.hero__chip-icon {
-  font-size: 1rem;
+.hero__dot--active {
+  background: var(--color-yellow);
+  width: 22px;
+  border-radius: 4px;
 }
 
-/* Action CTA Group */
-.hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-sm);
-  width: 100%;
-  margin-top: var(--space-xs);
-}
-
-.hero__btn-main {
-  font-size: 1.15rem;
-  padding: 0.95rem 1.85rem;
-  box-shadow: var(--shadow-md);
-}
-
-.hero__btn-sub {
-  font-size: 1.05rem;
-  padding: 0.95rem 1.6rem;
-}
-
-.hero__btn-emoji {
-  display: inline-block;
-  transition: transform var(--duration-fast) var(--ease-bounce);
-}
-
-.hero__btn-main:hover .hero__btn-emoji {
-  transform: scale(1.25) rotate(15deg);
-}
-
-/* Quote Card */
-.hero__quote-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-  border: var(--border-thin);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1.1rem;
-  max-width: 480px;
-  box-shadow: var(--shadow-xs);
-}
-
-.hero__quote-icon {
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  line-height: 1;
-  color: var(--color-red);
-  font-weight: 900;
-}
-
-.hero__quote-text {
-  font-size: 0.95rem;
-  line-height: 1.4;
-  margin: 0;
-  color: var(--color-ink);
-}
-
-/* --- Right Column: Visual Map Card --- */
-.hero__visual {
+/* ─────────────────────────────────────────
+   NETFLIX STRIP — bottom showcase cards
+───────────────────────────────────────── */
+.hero__strip {
   position: relative;
-  width: 100%;
-  max-width: 560px;
-  margin-inline: auto;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 0 clamp(1.5rem, 7vw, 5.5rem) clamp(1rem, 3vw, 2rem);
+  /* strip is inside the flex column, sits at the bottom */
+  margin-top: auto;
 }
 
-/* Floating Stickers */
-.hero__sticker {
+/* ─────────────────────────────────────────
+   INDIVIDUAL CARD
+───────────────────────────────────────── */
+.hero__card {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 155px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2.5px solid rgba(255, 255, 255, 0.12);
+  outline: none;
+
+  transition:
+    flex-grow 0.5s var(--ease-smooth),
+    transform 0.4s var(--ease-bounce),
+    border-color 0.3s ease,
+    box-shadow 0.4s ease;
+
+  transform-origin: bottom center;
+}
+
+/* Hovered — expands and lifts */
+.hero__card--hovered {
+  flex-grow: 2;
+  transform: translateY(-14px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.55);
+}
+
+/* Active — yellow glow border */
+.hero__card--active {
+  border-color: var(--color-yellow);
+  box-shadow:
+    0 0 0 1.5px var(--color-yellow),
+    0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+.hero__card--active.hero__card--hovered {
+  border-color: var(--color-yellow);
+  box-shadow:
+    0 0 0 1.5px var(--color-yellow),
+    0 22px 44px rgba(0, 0, 0, 0.55);
+}
+
+/* Card background gradient */
+.hero__card-bg {
   position: absolute;
-  z-index: 10;
+  inset: 0;
+  transition: transform 0.45s ease;
+}
+
+.hero__card--hovered .hero__card-bg {
+  transform: scale(1.08);
+}
+
+/* Gloss / shine on card */
+.hero__card-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  z-index: 1;
   pointer-events: none;
 }
 
-.hero__sticker-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-blue);
-  color: var(--color-white);
-  border: var(--border-thick);
-  border-radius: var(--radius-md);
-  padding: 0.5rem 0.9rem;
-  box-shadow: var(--shadow-md);
+/* Card number badge */
+.hero__card-number {
+  position: absolute;
+  top: 11px;
+  left: 13px;
+  z-index: 3;
   font-family: var(--font-display);
-  text-align: center;
-}
-
-.hero__sticker-inner--red {
-  background-color: var(--color-red);
-}
-
-.hero__sticker-label {
+  font-weight: 900;
   font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Default label at the bottom */
+.hero__card-label {
+  position: absolute;
+  bottom: 13px;
+  left: 13px;
+  z-index: 3;
+  font-family: var(--font-display);
   font-weight: 900;
-  letter-spacing: 0.05em;
-  opacity: 0.9;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-white);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
-.hero__sticker-value {
-  font-size: 1.15rem;
-  font-weight: 900;
-  line-height: 1.1;
+/* Hide label when hovered — overlay takes over */
+.hero__card--hovered .hero__card-label {
+  opacity: 0;
+  transform: translateY(10px);
 }
 
-.hero__sticker--top-right {
-  top: -16px;
-  right: -10px;
-  transform: rotate(8deg);
-  animation: float-sticker 4s ease-in-out infinite;
-}
-
-.hero__sticker--bottom-left {
-  bottom: 60px;
-  left: -15px;
-  transform: rotate(-6deg);
-  animation: float-sticker-alt 4.5s ease-in-out infinite;
-}
-
-@keyframes float-sticker {
-  0%, 100% { transform: translateY(0) rotate(8deg); }
-  50% { transform: translateY(-8px) rotate(6deg); }
-}
-
-@keyframes float-sticker-alt {
-  0%, 100% { transform: translateY(0) rotate(-6deg); }
-  50% { transform: translateY(-6px) rotate(-8deg); }
-}
-
-/* Map Card */
-.hero__map-card {
-  background-color: var(--color-white);
-  border: var(--border-thick);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  overflow: hidden;
-  position: relative;
-  transition: transform var(--duration-normal) var(--ease-bounce);
-}
-
-.hero__map-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 14px 14px 0 var(--color-ink);
-}
-
-/* Map Header */
-.hero__map-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.25rem;
-  border-bottom: var(--border-thick);
-  background-color: var(--color-white);
-}
-
-.hero__map-title-wrap {
+/* ── Hover Overlay (Festorama info reveal) ── */
+.hero__card-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(
+    to top,
+    rgba(8, 8, 8, 0.97) 0%,
+    rgba(8, 8, 8, 0.7) 55%,
+    transparent 100%
+  );
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  justify-content: flex-end;
+  padding: 14px 13px 13px;
+  gap: 4px;
+
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
-.hero__map-badge {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 900;
-  color: var(--color-blue);
-  letter-spacing: 0.08em;
+.hero__card--hovered .hero__card-overlay {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.hero__map-route-name {
+.hero__card-ov-title {
   font-family: var(--font-display);
-  font-size: 1.15rem;
   font-weight: 900;
+  font-size: 0.78rem;
+  color: var(--color-white);
+  line-height: 1.2;
   margin: 0;
 }
 
-.hero__map-pulse-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background-color: var(--color-yellow);
-  border: var(--border-thin);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-xs);
-  font-size: 1rem;
-  transition: transform var(--duration-fast) var(--ease-bounce);
+.hero__card-ov-desc {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.hero__map-pulse-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0 0 0;
+.hero__card-ov-cta {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--color-yellow);
+  margin-top: 2px;
 }
 
-/* Canvas & SVG */
-.hero__map-canvas {
-  position: relative;
-  background-color: var(--color-white);
-  line-height: 0;
-}
-
-.hero__map-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Animated Motorcycle */
-.hero__biker-marker {
-  offset-path: path("M 40,280 C 90,260 110,180 180,180 C 250,180 260,80 340,90 C 420,100 440,220 480,200");
-  offset-rotate: auto;
-  transform-box: fill-box;
-}
-
-.hero__biker-marker--animated {
-  animation: ride-road 8s linear infinite;
-}
-
-@keyframes ride-road {
-  0% {
-    offset-distance: 0%;
-  }
-  100% {
-    offset-distance: 100%;
-  }
-}
-
-/* Waypoint Pins */
-.hero__map-pin {
-  cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease-bounce);
-}
-
-.hero__map-pin:hover {
-  transform: scale(1.3);
-}
-
-.hero__map-pin--active {
-  transform: scale(1.35);
-}
-
-/* Popover Card inside Map Canvas */
-.hero__waypoint-popover {
+/* ── Active Progress Bar (bottom of card) ── */
+.hero__card-progress {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
-  background-color: var(--color-white);
-  border: var(--border-thick);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
-  box-shadow: var(--shadow-sm);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-yellow);
   z-index: 5;
-  pointer-events: auto;
+  transform-origin: left center;
+  animation: progressSweep 5.5s linear forwards;
 }
 
-.hero__popover-tag {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  background-color: var(--color-red);
-  color: var(--color-white);
-  padding: 0.15em 0.5em;
-  border-radius: 4px;
-  margin-bottom: 0.25rem;
+@keyframes progressSweep {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
-.hero__popover-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--color-ink-muted);
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero__content {
+    bottom: clamp(200px, 28vh, 260px);
+    left: var(--gutter);
+  }
+
+  .hero__strip {
+    padding-inline: var(--gutter);
+    gap: 7px;
+  }
+
+  .hero__card {
+    height: 120px;
+  }
+
+  .hero__card-ov-desc {
+    display: none;
+  }
+
+  .hero__tagline {
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+  }
 }
 
-.hero__popover-km {
-  color: var(--color-blue);
-}
+@media (max-width: 480px) {
+  .hero__card {
+    height: 100px;
+  }
 
-.hero__popover-title {
-  font-size: 1rem;
-  font-weight: 900;
-  margin: 0.15rem 0 0.25rem 0;
-  line-height: 1.2;
-}
+  .hero__card-label {
+    font-size: 0.65rem;
+  }
 
-.hero__popover-note {
-  font-size: 0.85rem;
-  line-height: 1.3;
-  margin: 0 0 0.5rem 0;
-  color: var(--color-ink);
-}
-
-.hero__popover-tabs {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.hero__popover-tab {
-  flex: 1;
-  padding: 0.3rem 0.5rem;
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  font-weight: 800;
-  background-color: var(--color-yellow-light);
-  border: var(--border-thin);
-  border-radius: var(--radius-sm);
-  transition: all var(--duration-fast) ease;
-}
-
-.hero__popover-tab--active {
-  background-color: var(--color-blue);
-  color: var(--color-white);
-  box-shadow: 2px 2px 0 var(--color-ink);
-}
-
-/* Map Footer */
-.hero__map-footer {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
-  align-items: center;
-  padding: 0.85rem 1rem;
-  background-color: var(--color-white);
-  border-top: var(--border-thick);
-}
-
-.hero__metric {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.hero__metric-icon {
-  font-size: 1.25rem;
-}
-
-.hero__metric-val {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 0.95rem;
-  line-height: 1.1;
-}
-
-.hero__metric-lbl {
-  font-size: 0.7rem;
-  color: var(--color-ink-muted);
-  font-weight: 600;
-}
-
-.hero__metric-divider {
-  width: 2px;
-  height: 28px;
-  background-color: var(--color-ink);
+  .hero__card-number {
+    display: none;
+  }
 }

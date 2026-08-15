@@ -28,32 +28,42 @@
   background-color: var(--color-white);
   border: var(--border-thick);
   border-radius: var(--radius-pill);
-  padding: 0.4rem 0.85rem 0.4rem 1rem;
+  padding: 0.35rem 0.85rem 0.35rem 1rem;
   box-shadow: var(--shadow-md);
 }
 
 /* Brand Logo */
 .navbar__logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
   user-select: none;
   cursor: pointer;
   padding-block: 2px;
+  transition: transform var(--duration-normal) var(--ease-bounce);
 }
 
 .navbar__logo-img {
-  height: 44px;
+  height: 48px;
   width: auto;
   display: block;
   object-fit: contain;
-  transition: transform var(--duration-normal) var(--ease-bounce);
-  filter: drop-shadow(2px 2px 0 rgba(20, 20, 20, 0.15));
+  transition: transform var(--duration-normal) var(--ease-bounce),
+              filter var(--duration-fast) ease;
+  transform-origin: center center;
+}
+
+.navbar__logo:hover {
+  transform: translateY(-2px);
 }
 
 .navbar__logo:hover .navbar__logo-img {
-  transform: scale(1.08) rotate(-3deg);
-  filter: drop-shadow(3px 3px 0 rgba(20, 20, 20, 0.25));
+  transform: scale(1.1) rotate(-4deg);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.2));
+}
+
+.navbar__logo:active .navbar__logo-img {
+  transform: scale(0.96) rotate(2deg);
 }
 
 /* Desktop Nav Links */
