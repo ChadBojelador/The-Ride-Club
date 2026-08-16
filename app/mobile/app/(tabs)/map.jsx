@@ -3,7 +3,8 @@
 // Placeholder for the discover map
 // ========================================
 
-import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, Pressable, useColorScheme } from 'react-native';
+import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Themes, Typography, Spacing, Radius } from '../../constants/Theme';
 
@@ -37,6 +38,28 @@ export default function MapScreen() {
           OpenStreetMap integration coming in Phase 2
         </Text>
       </View>
+
+      {/* Leaderboards entry point */}
+      <Pressable
+        id="map-leaderboard-btn"
+        style={({ pressed }) => [
+          styles.lbButton,
+          { backgroundColor: theme.surface, borderColor: theme.border },
+          pressed && styles.lbButtonPressed,
+        ]}
+        onPress={() => router.push('/leaderboard')}
+      >
+        <View style={styles.lbLeft}>
+          <View style={styles.lbIcon}>
+            <Text style={styles.lbEmoji}>🏆</Text>
+          </View>
+          <View>
+            <Text style={[styles.lbTitle, { color: theme.text }]}>Leaderboards</Text>
+            <Text style={[styles.lbSub, { color: theme.textSecondary }]}>Compete on route segments</Text>
+          </View>
+        </View>
+        <Text style={[styles.lbChevron, { color: theme.textMuted }]}>›</Text>
+      </Pressable>
     </View>
   );
 }
@@ -106,5 +129,43 @@ const styles = StyleSheet.create({
   bannerText: {
     ...Typography.bodySmall,
     fontStyle: 'italic',
+  },
+  lbButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
+    borderTopWidth: 1,
+  },
+  lbButtonPressed: {
+    opacity: 0.7,
+  },
+  lbLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  lbIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#FEC60F22',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lbEmoji: {
+    fontSize: 22,
+  },
+  lbTitle: {
+    ...Typography.heading,
+    marginBottom: 2,
+  },
+  lbSub: {
+    ...Typography.bodySmall,
+  },
+  lbChevron: {
+    fontSize: 22,
+    fontWeight: '300',
   },
 });
