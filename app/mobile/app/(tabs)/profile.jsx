@@ -18,7 +18,7 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors, Themes, Typography, Spacing, Radius, Shadows } from '../../constants/Theme';
 import { useAuth } from '../../context/AuthContext';
 import { garageService } from '../../services/garage';
-import { MAINTENANCE_CATEGORIES } from '../../../shared/maintenance';
+import { MAINTENANCE_CATEGORIES } from '../../constants/Maintenance';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme() ?? 'light';

@@ -17,7 +17,7 @@ import {
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Themes, Typography, Spacing, Radius, Shadows } from '../../constants/Theme';
-import { MAINTENANCE_CATEGORIES } from '../../../shared/maintenance';
+import { MAINTENANCE_CATEGORIES } from '../../constants/Maintenance';
 import { garageService } from '../../services/garage';
 
 export default function MaintenanceHistoryScreen() {
