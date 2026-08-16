@@ -1,12 +1,14 @@
 const { Pool } = require('pg');
 const config = require('../config');
 
+const isLocal = !config.DATABASE_URL || config.DATABASE_URL.includes('localhost') || config.DATABASE_URL.includes('127.0.0.1');
+
 const pool = new Pool({
   connectionString: config.DATABASE_URL,
-  // Connection pool settings
+  ssl: isLocal ? false : { rejectUnauthorized: false },
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 10000,
 });
 
 // Log connection events in development

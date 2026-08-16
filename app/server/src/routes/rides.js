@@ -155,6 +155,31 @@ router.post('/:id/finish', requireAuth, validate({
       [req.params.id, title, description, endName, visibility]
     );
 
+    // If vehicleId is provided or user has a primary vehicle, link ride and update odometer
+    if (rows[0] && rows[0].distance_km) {
+      const dist = parseFloat(rows[0].distance_km) || 0;
+      const targetVehicleId = req.body.vehicleId || req.body.vehicle_id;
+      if (targetVehicleId) {
+        await query(
+          `UPDATE rides SET vehicle_id = $1 WHERE id = $2;
+           UPDATE vehicles SET odometer_km = COALESCE(odometer_km, 0) + $3, updated_at = NOW() WHERE id = $1 AND user_id = $4;`,
+          [targetVehicleId, req.params.id, dist, req.user.id]
+        );
+      } else {
+        const { rows: primaryVeh } = await query(
+          `SELECT id FROM vehicles WHERE user_id = $1 AND is_primary = true LIMIT 1`,
+          [req.user.id]
+        );
+        if (primaryVeh.length > 0) {
+          await query(
+            `UPDATE rides SET vehicle_id = $1 WHERE id = $2;
+             UPDATE vehicles SET odometer_km = COALESCE(odometer_km, 0) + $3, updated_at = NOW() WHERE id = $1 AND user_id = $4;`,
+            [primaryVeh[0].id, req.params.id, dist, req.user.id]
+          );
+        }
+      }
+    }
+
     res.json(rows[0]);
   } catch (err) {
     next(err);

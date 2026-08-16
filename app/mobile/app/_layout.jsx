@@ -28,7 +28,7 @@ export {
 } from 'expo-router';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -41,18 +41,18 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontError) throw fontError;
-  }, [fontError]);
-
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync().catch(() => {});
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // Safety fallback: always hide splash screen within 1.5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync().catch(() => {});
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <AuthProvider>
@@ -86,6 +86,26 @@ function RootLayoutNav() {
           options={{
             presentation: 'modal',
             animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="garage/add-vehicle"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="garage/log-service"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+        <Stack.Screen
+          name="garage/history"
+          options={{
+            animation: 'slide_from_right',
           }}
         />
       </Stack>

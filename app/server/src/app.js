@@ -13,6 +13,7 @@ const photoRoutes = require('./routes/photos');
 const clubRoutes = require('./routes/clubs');
 const mapRoutes = require('./routes/map');
 const adminRoutes = require('./routes/admin');
+const vehicleRoutes = require('./routes/vehicles');
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/photos', photoRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 // ── 404 Handler ─────────────────────────────────────────
 app.use((req, res) => {

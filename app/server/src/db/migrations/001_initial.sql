@@ -3,14 +3,14 @@
 -- Requires PostgreSQL with PostGIS extension
 -- ========================================
 
--- Enable PostGIS
+-- Enable PostGIS & pgcrypto
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ========================================
 -- Users
 -- ========================================
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email           VARCHAR(255) UNIQUE,
     display_name    VARCHAR(100) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE users (
 -- ========================================
 -- Rides
 -- ========================================
-CREATE TABLE rides (
+CREATE TABLE IF NOT EXISTS rides (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
     title           VARCHAR(200),
@@ -54,16 +54,16 @@ CREATE TABLE rides (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_rides_user ON rides(user_id);
-CREATE INDEX idx_rides_route ON rides USING GIST(route);
-CREATE INDEX idx_rides_visibility ON rides(visibility);
-CREATE INDEX idx_rides_status ON rides(status);
-CREATE INDEX idx_rides_created ON rides(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_rides_user ON rides(user_id);
+CREATE INDEX IF NOT EXISTS idx_rides_route ON rides USING GIST(route);
+CREATE INDEX IF NOT EXISTS idx_rides_visibility ON rides(visibility);
+CREATE INDEX IF NOT EXISTS idx_rides_status ON rides(status);
+CREATE INDEX IF NOT EXISTS idx_rides_created ON rides(created_at DESC);
 
 -- ========================================
 -- Ride Points (GPS breadcrumbs)
 -- ========================================
-CREATE TABLE ride_points (
+CREATE TABLE IF NOT EXISTS ride_points (
     id          BIGSERIAL PRIMARY KEY,
     ride_id     UUID REFERENCES rides(id) ON DELETE CASCADE,
     location    GEOMETRY(Point, 4326) NOT NULL,
@@ -72,13 +72,13 @@ CREATE TABLE ride_points (
     recorded_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_ride_points_ride ON ride_points(ride_id);
-CREATE INDEX idx_ride_points_time ON ride_points(recorded_at);
+CREATE INDEX IF NOT EXISTS idx_ride_points_ride ON ride_points(ride_id);
+CREATE INDEX IF NOT EXISTS idx_ride_points_time ON ride_points(recorded_at);
 
 -- ========================================
 -- Places
 -- ========================================
-CREATE TABLE places (
+CREATE TABLE IF NOT EXISTS places (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID REFERENCES users(id) ON DELETE SET NULL,
     name            VARCHAR(200) NOT NULL,
@@ -91,13 +91,13 @@ CREATE TABLE places (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_places_location ON places USING GIST(location);
-CREATE INDEX idx_places_category ON places(category);
+CREATE INDEX IF NOT EXISTS idx_places_location ON places USING GIST(location);
+CREATE INDEX IF NOT EXISTS idx_places_category ON places(category);
 
 -- ========================================
 -- Photos
 -- ========================================
-CREATE TABLE photos (
+CREATE TABLE IF NOT EXISTS photos (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID REFERENCES users(id) ON DELETE CASCADE,
     ride_id         UUID REFERENCES rides(id) ON DELETE SET NULL,
@@ -111,14 +111,14 @@ CREATE TABLE photos (
     created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_photos_ride ON photos(ride_id);
-CREATE INDEX idx_photos_place ON photos(place_id);
-CREATE INDEX idx_photos_user ON photos(user_id);
+CREATE INDEX IF NOT EXISTS idx_photos_ride ON photos(ride_id);
+CREATE INDEX IF NOT EXISTS idx_photos_place ON photos(place_id);
+CREATE INDEX IF NOT EXISTS idx_photos_user ON photos(user_id);
 
 -- ========================================
 -- Clubs
 -- ========================================
-CREATE TABLE clubs (
+CREATE TABLE IF NOT EXISTS clubs (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name        VARCHAR(100) NOT NULL,
     description TEXT,
@@ -132,7 +132,7 @@ CREATE TABLE clubs (
 -- ========================================
 -- Club Members
 -- ========================================
-CREATE TABLE club_members (
+CREATE TABLE IF NOT EXISTS club_members (
     club_id     UUID REFERENCES clubs(id) ON DELETE CASCADE,
     user_id     UUID REFERENCES users(id) ON DELETE CASCADE,
     role        VARCHAR(20) DEFAULT 'member',
@@ -140,12 +140,12 @@ CREATE TABLE club_members (
     PRIMARY KEY (club_id, user_id)
 );
 
-CREATE INDEX idx_club_members_user ON club_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_club_members_user ON club_members(user_id);
 
 -- ========================================
 -- Club Invites
 -- ========================================
-CREATE TABLE club_invites (
+CREATE TABLE IF NOT EXISTS club_invites (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     club_id      UUID REFERENCES clubs(id) ON DELETE CASCADE,
     invited_by   UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -154,13 +154,13 @@ CREATE TABLE club_invites (
     created_at   TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_club_invites_user ON club_invites(invited_user);
-CREATE INDEX idx_club_invites_status ON club_invites(status);
+CREATE INDEX IF NOT EXISTS idx_club_invites_user ON club_invites(invited_user);
+CREATE INDEX IF NOT EXISTS idx_club_invites_status ON club_invites(status);
 
 -- ========================================
 -- Refresh Tokens (for JWT auth)
 -- ========================================
-CREATE TABLE refresh_tokens (
+CREATE TABLE IF NOT EXISTS refresh_tokens (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id     UUID REFERENCES users(id) ON DELETE CASCADE,
     token       TEXT NOT NULL UNIQUE,
@@ -168,5 +168,5 @@ CREATE TABLE refresh_tokens (
     created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_refresh_tokens_user ON refresh_tokens(user_id);
-CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token);

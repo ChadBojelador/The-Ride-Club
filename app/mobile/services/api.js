@@ -4,13 +4,27 @@
 // ========================================
 
 import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-// Change this to your actual server URL
-// For Expo Go on physical device, use your machine's local IP
-// For emulator: Android = 10.0.2.2, iOS = localhost
-const API_BASE = __DEV__
-  ? 'http://192.168.1.100:3000/api'  // TODO: Update with your local IP
-  : 'https://api.theridesclub.com/api';
+// Dynamically determine backend URL based on host and platform
+const getApiBase = () => {
+  if (!__DEV__) return 'https://api.theridesclub.com/api';
+  
+  if (Platform.OS === 'web') {
+    return 'http://localhost:3000/api';
+  }
+  
+  const hostUri = Constants.expoConfig?.hostUri;
+  if (hostUri) {
+    const ip = hostUri.split(':')[0];
+    return `http://${ip}:3000/api`;
+  }
+  
+  return 'http://192.168.254.120:3000/api';
+};
+
+const API_BASE = getApiBase();
 
 const TOKEN_KEY = 'trc_access_token';
 const REFRESH_KEY = 'trc_refresh_token';
