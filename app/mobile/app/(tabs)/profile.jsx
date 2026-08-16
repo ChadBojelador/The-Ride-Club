@@ -19,6 +19,7 @@ import { Colors, Themes, Typography, Spacing, Radius, Shadows } from '../../cons
 import { useAuth } from '../../context/AuthContext';
 import { garageService } from '../../services/garage';
 import { MAINTENANCE_CATEGORIES } from '../../constants/Maintenance';
+import { getLevelInfo } from '../../constants/Gamification';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -169,6 +170,31 @@ export default function ProfileScreen() {
                   <Text style={styles.odometerBadge}>
                     📍 {Number(activeVehicle.odometer_km || 0).toLocaleString()} km on Odo
                   </Text>
+                  {/* ── Level Tag ────────────────────────────────── */}
+                  {(() => {
+                    const xp = parseInt(activeVehicle.xp) || 0;
+                    const lvl = getLevelInfo(xp);
+                    return (
+                      <View style={styles.levelTagRow}>
+                        <View style={styles.levelTag}>
+                          <Text style={styles.levelTagText}>
+                            {lvl.emoji} Lv.{lvl.level} {lvl.title}
+                          </Text>
+                        </View>
+                        <Text style={styles.xpLabel}>{xp.toLocaleString()} XP</Text>
+                      </View>
+                    );
+                  })()}
+                  {/* XP Progress Bar */}
+                  {(() => {
+                    const xp = parseInt(activeVehicle.xp) || 0;
+                    const lvl = getLevelInfo(xp);
+                    return (
+                      <View style={styles.xpBarBg}>
+                        <View style={[styles.xpBarFill, { width: `${Math.round(lvl.progress * 100)}%` }]} />
+                      </View>
+                    );
+                  })()}
                 </View>
               </View>
 
@@ -252,6 +278,18 @@ export default function ProfileScreen() {
                   }
                 >
                   <Text style={[styles.historyText, { color: theme.text }]}>📋 History</Text>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.actionBtn, styles.passportBtn]}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/garage/vehicle-passport',
+                      params: { vehicleId: activeVehicle.id },
+                    })
+                  }
+                >
+                  <Text style={styles.passportBtnText}>⚡ Passport</Text>
                 </Pressable>
               </View>
             </View>
@@ -586,6 +624,50 @@ const styles = StyleSheet.create({
   historyText: {
     ...Typography.bodySmall,
     fontWeight: '600',
+  },
+  passportBtn: {
+    backgroundColor: '#7C3AED',
+  },
+  passportBtnText: {
+    ...Typography.bodySmall,
+    fontWeight: '700',
+    color: '#fff',
+  },
+
+  // Level tag & XP bar
+  levelTagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    gap: 8,
+  },
+  levelTag: {
+    backgroundColor: '#7C3AED22',
+    borderRadius: Radius.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  levelTagText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#7C3AED',
+  },
+  xpLabel: {
+    fontSize: 11,
+    color: '#7C3AED',
+    fontWeight: '600',
+  },
+  xpBarBg: {
+    height: 5,
+    borderRadius: Radius.pill,
+    backgroundColor: '#7C3AED22',
+    overflow: 'hidden',
+    marginTop: 4,
+  },
+  xpBarFill: {
+    height: '100%',
+    borderRadius: Radius.pill,
+    backgroundColor: '#7C3AED',
   },
 
   // Empty garage
