@@ -18,7 +18,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Themes, Typography, Spacing, Radius, Shadows } from '../../constants/Theme';
-import { VEHICLE_TYPES } from '../../../shared/maintenance';
+import { VEHICLE_TYPES } from '../../constants/Maintenance';
 import { garageService } from '../../services/garage';
 
 export default function AddVehicleScreen() {
