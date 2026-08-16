@@ -8,6 +8,7 @@ const { requireAuth, optionalAuth } = require('../middleware/auth');
 const { validate } = require('../middleware/validate');
 const { query, getClient } = require('../db/pool');
 const { MAINTENANCE_CATEGORIES } = require('../../../shared/maintenance');
+const { getLevelInfo, BADGES } = require('../../../shared/gamification');
 
 const router = express.Router();
 
@@ -449,6 +450,92 @@ router.delete('/:id/maintenance/:logId', requireAuth, async (req, res, next) => 
     }
 
     res.json({ message: 'Log deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/vehicles/:id/passport
+ * Returns vehicle leveling data: XP, level, rank, badges, and place stamps.
+ */
+router.get('/:id/passport', requireAuth, async (req, res, next) => {
+  try {
+    // Get vehicle with XP / level
+    const { rows: vehRows } = await query(
+      `SELECT id, nickname, make, model, year, xp, level, places_visited_count, odometer_km
+       FROM vehicles
+       WHERE id = $1 AND user_id = $2`,
+      [req.params.id, req.user.id]
+    );
+
+    if (vehRows.length === 0) {
+      return res.status(404).json({ error: 'Vehicle not found' });
+    }
+
+    const vehicle = vehRows[0];
+    const xp = parseInt(vehicle.xp) || 0;
+    const levelInfo = getLevelInfo(xp);
+
+    // Get unlocked badges
+    const { rows: badgeRows } = await query(
+      `SELECT badge_id, badge_name, badge_category, badge_icon, xp_awarded, unlocked_at
+       FROM vehicle_badges
+       WHERE vehicle_id = $1
+       ORDER BY unlocked_at ASC`,
+      [req.params.id]
+    );
+
+    // Get place stamps (places visited during rides)
+    const { rows: placeRows } = await query(
+      `SELECT vpv.place_id, p.name, p.category, p.description,
+              ST_AsGeoJSON(p.location) as location,
+              vpv.xp_earned, vpv.visited_at
+       FROM vehicle_place_visits vpv
+       JOIN places p ON vpv.place_id = p.id
+       WHERE vpv.vehicle_id = $1
+       ORDER BY vpv.visited_at DESC`,
+      [req.params.id]
+    );
+
+    // Count total rides
+    const { rows: rideCount } = await query(
+      `SELECT COUNT(*) as total_rides,
+              COALESCE(SUM(distance_km), 0) as total_distance
+       FROM rides
+       WHERE vehicle_id = $1 AND status = 'completed'`,
+      [req.params.id]
+    );
+
+    // Available badges (all defined badges, marking which are unlocked)
+    const unlockedIds = new Set(badgeRows.map(b => b.badge_id));
+    const allBadges = BADGES.map(b => ({
+      ...b,
+      unlocked: unlockedIds.has(b.id),
+      unlockedAt: badgeRows.find(u => u.badge_id === b.id)?.unlocked_at || null,
+    }));
+
+    res.json({
+      vehicle: {
+        id: vehicle.id,
+        nickname: vehicle.nickname,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year,
+        odometer_km: vehicle.odometer_km,
+      },
+      xp,
+      level: levelInfo.level,
+      title: levelInfo.title,
+      emoji: levelInfo.emoji,
+      progress: levelInfo.progress,
+      nextMinXp: levelInfo.nextMinXp,
+      totalRides: parseInt(rideCount[0]?.total_rides) || 0,
+      totalDistance: parseFloat(rideCount[0]?.total_distance) || 0,
+      placesVisited: placeRows.length,
+      badges: allBadges,
+      placeStamps: placeRows,
+    });
   } catch (err) {
     next(err);
   }
