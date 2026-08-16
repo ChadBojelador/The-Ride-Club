@@ -14,6 +14,7 @@ const clubRoutes = require('./routes/clubs');
 const mapRoutes = require('./routes/map');
 const adminRoutes = require('./routes/admin');
 const vehicleRoutes = require('./routes/vehicles');
+const segmentRoutes = require('./routes/segments');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api/clubs', clubRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/segments', segmentRoutes);
 
 // ── 404 Handler ─────────────────────────────────────────
 app.use((req, res) => {

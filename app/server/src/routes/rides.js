@@ -4,6 +4,7 @@ const { validate } = require('../middleware/validate');
 const { query } = require('../db/pool');
 const { RIDE_VISIBILITY, RIDE_STATUS, TRACKING_MODE } = require('../../../shared/enums');
 const { getLevelInfo, calculateRideXP, BADGES } = require('../../../shared/gamification');
+const { formatDuration } = require('./segments');
 
 const router = express.Router();
 
@@ -337,7 +338,103 @@ router.post('/:id/finish', requireAuth, validate({
       }
     }
 
-    res.json({ ...(rows[0] || {}), gamification: xpResult });
+    // ── Segment Leaderboard ────────────────────────────────────────────────────
+    let segmentResult = null;
+    if (finishedRide && finishedRide.distance_km > 0) {
+      try {
+        // Re-fetch start/end points as WKT for PostGIS proximity match
+        const { rows: rideGeo } = await query(
+          `SELECT start_point, end_point, start_name, end_name, distance_km,
+                  duration_seconds, avg_speed_kmh, max_speed_kmh, vehicle_id
+           FROM rides WHERE id = $1`,
+          [req.params.id]
+        );
+        const rg = rideGeo[0];
+        if (rg && rg.start_point && rg.end_point) {
+          // Look for a matching segment within 500m start AND 500m end
+          const { rows: matching } = await query(
+            `SELECT id, name, total_attempts
+             FROM route_segments
+             WHERE ST_DWithin(start_point, $1::geography, 500)
+               AND ST_DWithin(end_point,   $2::geography, 500)
+             ORDER BY ST_Distance(start_point, $1::geography)
+             LIMIT 1`,
+            [rg.start_point, rg.end_point]
+          );
+
+          let segmentId, segmentName;
+          if (matching.length > 0) {
+            // Use existing segment
+            segmentId   = matching[0].id;
+            segmentName = matching[0].name;
+            // Increment attempt count
+            await query(
+              `UPDATE route_segments SET total_attempts = total_attempts + 1 WHERE id = $1`,
+              [segmentId]
+            );
+          } else {
+            // Create a new segment from this ride
+            const sName = rg.start_name && rg.end_name
+              ? `${rg.start_name} → ${rg.end_name}`
+              : `Segment ${new Date().toLocaleDateString()}`;
+            const { rows: newSeg } = await query(
+              `INSERT INTO route_segments
+                 (name, start_name, end_name, start_point, end_point, distance_km, created_by, total_attempts)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, 1)
+               RETURNING id, name`,
+              [sName, rg.start_name, rg.end_name, rg.start_point, rg.end_point,
+               rg.distance_km, req.user.id]
+            );
+            segmentId   = newSeg[0].id;
+            segmentName = newSeg[0].name;
+          }
+
+          // Upsert personal best (keep only fastest time per user per segment)
+          const linkedVehId = (await query(`SELECT vehicle_id FROM rides WHERE id = $1`, [req.params.id])).rows[0]?.vehicle_id || null;
+          await query(
+            `INSERT INTO segment_leaderboard
+               (segment_id, ride_id, user_id, vehicle_id, duration_seconds, distance_km, avg_speed_kmh, max_speed_kmh)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             ON CONFLICT (segment_id, user_id)
+             DO UPDATE SET
+               ride_id          = EXCLUDED.ride_id,
+               duration_seconds = EXCLUDED.duration_seconds,
+               distance_km      = EXCLUDED.distance_km,
+               avg_speed_kmh    = EXCLUDED.avg_speed_kmh,
+               max_speed_kmh    = EXCLUDED.max_speed_kmh,
+               vehicle_id       = EXCLUDED.vehicle_id,
+               created_at       = NOW()
+             WHERE segment_leaderboard.duration_seconds > EXCLUDED.duration_seconds`,
+            [segmentId, req.params.id, req.user.id, linkedVehId,
+             rg.duration_seconds, rg.distance_km, rg.avg_speed_kmh, rg.max_speed_kmh]
+          );
+
+          // Get user's rank on this segment
+          const { rows: rankRow } = await query(
+            `SELECT rank FROM (
+               SELECT user_id,
+                      ROW_NUMBER() OVER (ORDER BY duration_seconds ASC) AS rank
+               FROM segment_leaderboard
+               WHERE segment_id = $1
+             ) ranked
+             WHERE user_id = $2`,
+            [segmentId, req.user.id]
+          );
+
+          segmentResult = {
+            segmentId,
+            segmentName,
+            rank: rankRow[0] ? parseInt(rankRow[0].rank) : null,
+            personalBest: formatDuration(rg.duration_seconds),
+          };
+        }
+      } catch (segErr) {
+        // Non-fatal — ride is already saved, segment matching is best-effort
+        console.error('Segment matching error:', segErr.message);
+      }
+    }
+
+    res.json({ ...(rows[0] || {}), gamification: xpResult, segment: segmentResult });
   } catch (err) {
     next(err);
   }
